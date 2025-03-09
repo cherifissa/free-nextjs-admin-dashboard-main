@@ -23,7 +23,8 @@ export default function CreateUser() {
   const [userData, setUserData] = useState({
     name: "",
     email: "",
-    role: "user", // Par défaut, le rôle est "user"
+    role: "owner", // Par défaut, le rôle est "user"
+    password: "admin123",
     isActive: false, // Ajout d'un état pour activer/désactiver l'utilisateur
   });
 

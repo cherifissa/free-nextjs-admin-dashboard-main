@@ -7,14 +7,37 @@ import Button from "@/components/ui/button/Button";
 import TextArea from "@/components/form/input/TextArea";
 import { useRouter } from "next/navigation";
 
+interface User {
+  id: number;
+  name: string;
+  email: string;
+  role: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export default function CreateQuiz() {
+  const [user, setUser] = useState<User | null>(null);
+    // Récupérer les données de l'utilisateur depuis le localStorage
+    useEffect(() => {
+      const userData = localStorage.getItem("user");
+      if (userData) {
+        try {
+          const user = JSON.parse(userData);
+          setUser(user);
+          
+        } catch (error) {
+          console.error("Erreur lors de la lecture des données de l'utilisateur", error);
+        }
+      }
+    }, []);
+
   const [quizData, setQuizData] = useState({
     title: "",
     description: "",
     difficulty: "easy",
     categoryId: "",
-    isPublished: false,
-    image: null as File | null,
+    authorId: user?.id,
   });
 
   // Options pour la difficulté
@@ -26,9 +49,9 @@ export default function CreateQuiz() {
 
   // Options pour la catégorie
   const categoryOptions = [
-    { value: "1", label: "1" },
-    { value: "2", label: "2" },
-    { value: "3", label: "3" },
+    { value: 1, label: "1" },
+    { value: 2, label: "2" },
+    { value: 3, label: "3" },
   ];
 
   const handleFileChange = (file: File) => {
@@ -56,21 +79,18 @@ export default function CreateQuiz() {
 
     // Envoyer les données à l'API
     try {
-      const formData = new FormData();
-      formData.append("title", quizData.title);
-      formData.append("description", quizData.description);
-      formData.append("difficulty", quizData.difficulty);
-      formData.append("categoryId", quizData.categoryId);
-      formData.append("isPublished", quizData.isPublished.toString());
-      if (quizData.image) {
-        formData.append("image", quizData.image);
-      }
+   
+      console.log("formData. data :", quizData);
 
       const response = await fetch("/api/quizzes", {
         method: "POST",
-        body: formData,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(quizData),
       });
-
+      console.log("Réponse de l'API :", response.status);
+      
       if (!response.ok) {
         throw new Error("Échec de la création du quiz.");
       }
@@ -140,6 +160,7 @@ export default function CreateQuiz() {
               Catégorie
             </label>
             <Select
+            
               options={categoryOptions}
               placeholder="Sélectionnez une catégorie"
               onChange={(value) =>
