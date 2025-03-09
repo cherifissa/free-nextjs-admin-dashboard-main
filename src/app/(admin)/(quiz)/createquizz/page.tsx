@@ -26,9 +26,9 @@ export default function CreateQuiz() {
 
   // Options pour la catégorie
   const categoryOptions = [
-    { value: "1", label: "Programmation" },
-    { value: "2", label: "Web Development" },
-    { value: "3", label: "Data Science" },
+    { value: "1", label: "1" },
+    { value: "2", label: "2" },
+    { value: "3", label: "3" },
   ];
 
   const handleFileChange = (file: File) => {
